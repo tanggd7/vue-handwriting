@@ -64,8 +64,8 @@ MyRouter.install = function (vue) {
     */
     beforeCreate () {
       /*
-        this.$options.router 在最开始的时候只有根组件有，需要将 router 对象挂在到根组件上，这样子节点就能访问了
-        所有的子节点都去获取父组件的实例，并绑定到自己的实例上，这样 router 属性就层层向下传递了
+        this.$options.router 在最开始的时候只有根组件有，需要将 router 对象挂在到根组件上，这样子组件就能访问了
+        所有的子组件都去获取父组件的实例，并绑定到自己的实例上，这样 router 属性就层层向下传递了
         并且每个组件都是共享的 router 实例，保证了唯一性
       */
       if (this.$options && this.$options.router) {
