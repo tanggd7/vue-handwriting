@@ -6,6 +6,7 @@ class Store {
     this._mutations = options.mutations || {}
     this._actions = options.actions || {}
 
+    // 绑定 this 的上下文，因为当在 actions 中结构出来以后，commit 的 this 上下文就变了
     this.commit = this.commit.bind(this)
 
     /*
@@ -26,6 +27,7 @@ class Store {
       })
     })
 
+    // 用 Vue 的双向绑定的特性定义 state
     this.vm = new Vue({
       data: {
         state: options.state || {}
