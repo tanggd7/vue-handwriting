@@ -1,3 +1,9 @@
+/*
+  替换原型中的 7 个方法
+*/
+const originalProto = Array.prototype
+const methods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse']
+
 let DepTarget = null
 /** 对象创建响应式参数 */
 function defineReactive (obj, key, val) {
@@ -6,6 +12,18 @@ function defineReactive (obj, key, val) {
 
   // * 创建 Dep 实例，一个 key 只有一个 Dep 实例，但是因为模板中可能多次使用，所以会创建多个 watcher 实例
   const dep = new Dep()
+
+  if (Array.isArray(val)) {
+    const arrayProto = Object.create(originalProto) // 备份一份，后面修改备份
+    methods.forEach(function (method) {
+      arrayProto[method] = function () {
+        originalProto[method].apply(this, arguments) // 原始操作
+        dep.notify() // 通知
+      }
+    })
+    // eslint-disable-next-line no-proto
+    val.__proto__ = arrayProto
+  }
 
   Object.defineProperty(obj, key, {
     get () {
@@ -33,25 +51,10 @@ function observe (obj) {
   if (typeof obj !== 'object' || obj == null) {
     return
   }
-  // eslint-disable-next-line no-new
-  new Observer(obj)
-}
 
-/** 主要像源码靠近，源码中是这么实现的 */
-class Observer {
-  constructor (obj) {
-    if (Array.isArray(obj)) {
-      // TODO
-    } else {
-      this.walk(obj)
-    }
-  }
-
-  walk (obj) {
-    Object.keys(obj).forEach(key => {
-      defineReactive(obj, key, obj[key])
-    })
-  }
+  Object.keys(obj).forEach(key => {
+    defineReactive(obj, key, obj[key])
+  })
 }
 
 /** 将 data 上的属性代理到 this 上，这样只要通过 this.xxx 就能获取到参数值了 */
