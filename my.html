@@ -16,6 +16,8 @@
     <p v-text="counter"></p>
     <p v-html="desc"></p>
     <p>{{num}}</p>
+    <div><input v-model="counter" /></div>
+    <button @click="onClick">+1</button>
   </div>
   <script src="./MyVue/index.js"></script>
   <script>
@@ -26,11 +28,16 @@
         desc: '<span style="color: red">Hello World</span>',
         num: [1]
       },
+      methods: {
+        onClick() {
+          app.counter++
+        }
+      }
     })
-    setInterval(() => {
-      app.counter++
-      app.num.push(app.counter)
-    }, 1000);
+    // setInterval(() => {
+    //   app.counter++
+    //   app.num.push(app.counter)
+    // }, 1000);
   </script>
 </body>
 

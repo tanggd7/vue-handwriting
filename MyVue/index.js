@@ -124,12 +124,15 @@ class Compile {
   compileElement (node) {
     const nodeAttrs = node.attributes
     Array.from(nodeAttrs).forEach(attr => {
-      const attrName = attr.name // k-text
+      const attrName = attr.name // v-text
       const exp = attr.value // xxx
       if (this.isDirective(attrName)) {
         const dir = attrName.substring(2)
-        // 执行函数，例如 k-text
+        // 执行函数，例如 v-text
         this[dir] && this[dir](node, exp)
+      } else if (this.isEvent(attrName)) {
+        const dir = attrName.substring(1)
+        this.eventHandler(node, exp, dir)
       }
     })
   }
@@ -164,6 +167,18 @@ class Compile {
     this.update(node, exp, 'html')
   }
 
+  /** v-model */
+  model (node, exp) {
+    // 只完成赋值和更新
+    this.update(node, exp, 'model')
+
+    // 时间监听
+    node.addEventListener('input', function (e) {
+      // 新的值赋给数据
+      this.$vm[exp] = e.target.value
+    }.bind(this))
+  }
+
   /** 初始化的时候，解析 html 中的插值和指令，并且创建一个观察者，传一个更新方法 */
   update (node, exp, dir) {
     // 初始化
@@ -183,6 +198,20 @@ class Compile {
 
   htmlUpdater (node, val) {
     node.innerHTML = val
+  }
+
+  modelUpdater (node, val) {
+    node.value = val
+  }
+
+  /** 判断是否事件 */
+  isEvent (attr) {
+    return attr.startsWith('@')
+  }
+
+  eventHandler (node, exp, dir) {
+    const fn = this.$vm.$options.methods && this.$vm.$options.methods[exp]
+    node.addEventListener(dir, fn.bind(this.$vm))
   }
 }
 
