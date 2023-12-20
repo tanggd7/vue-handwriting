@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>手写 Vue</title>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{counter}}</p>
+    <p>{{counter}}</p>
+    <p>{{counter}}</p>
+    <p v-text="counter"></p>
+    <p v-html="desc"></p>
+    <p>{{num}}</p>
+    <div><input v-model="counter" /></div>
+    <button @click="onClick">+1</button>
+  </div>
+  <script src="./MyVue/index.js"></script>
+  <script>
+    const app = new MyVue({
+      el: '#app',
+      data: {
+        counter: 1,
+        desc: '<span style="color: red">Hello World</span>',
+        num: [1]
+      },
+      methods: {
+        onClick() {
+          app.counter++
+        }
+      }
+    })
+    // setInterval(() => {
+    //   app.counter++
+    //   app.num.push(app.counter)
+    // }, 1000);
+  </script>
+</body>
+
+</html>
